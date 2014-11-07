@@ -11,6 +11,20 @@
 
 $mygpGeotagsGeoMetatags_key = "adventureTracksGpx2map";
 
+/* Meta Keys */
+$trail_title 		= 'gpx2map-trail-title';
+$trail_aka 			= 'gpx2map-trail-aka';
+$trail_length		= 'gpx2map-trail-length';
+$trail_total_up		= 'gpx2map-trail-total-up';
+$trail_total_down	= 'gpx2map-trail-total-down';
+$trail_trailhead	= 'gpx2map-trail-trailhead';
+$trail_howtofind	= 'gpx2map-trail-howtofind';
+$trail_desc			= 'gpx2map-trail-desc';
+
+$meta_keys = [$trail_title, $trail_aka, $trail_length, $trail_total_up, $trail_total_down, $trail_trailhead, $trail_howtofind, $trail_desc];
+
+
+
 // Make sure we don't expose any info if called directly
 if ( !function_exists( 'add_action' ) ) {
 	echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
@@ -26,29 +40,9 @@ define( 'AT_GPX2MAP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
  */
 function gpx2map_scripts() {
 
-	global $wp_styles;
-
-	wp_enqueue_style('blog_post_map style', AT_BLOGPOSTMAP_PLUGIN_URL . 'blog_post_map.css');
-	wp_enqueue_style('blog_post_map marker cluster', AT_BLOGPOSTMAP_PLUGIN_URL . 'marker_cluster.css');
-	wp_enqueue_script('blog_post_map script', AT_BLOGPOSTMAP_PLUGIN_URL . 'blog_post_map.js', array(), false, false );
-
-	// Mapbox style and script
-	wp_enqueue_style('mapbox', 'https://api.tiles.mapbox.com/mapbox.js/v2.0.1/mapbox.css', array(), '2.0.1');
-	wp_enqueue_script('mapbox', 'https://api.tiles.mapbox.com/mapbox.js/v2.0.1/mapbox.js', array(), '2.0.1', false );
-
-	// Mapbox fullscreen plugin style and script
-	wp_enqueue_style('mapbox fullscreen', 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/leaflet.fullscreen.css', array(), '0.0.3');
-	wp_enqueue_script('mapbox fullscreen', 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.3/Leaflet.fullscreen.min.js', array('mapbox'), '0.0.3', false );
-
-	// Mapbox locate plugin style and script
-	wp_enqueue_style('mapbox locate', 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.css', array(), '0.24.0');
-	wp_enqueue_style('mapbox locate ie', 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.21.0/L.Control.Locate.ie.css', array('mapbox locate'), '0.21.0');
-	$wp_styles->add_data( 'mapbox locate ie', 'conditional', 'IE 9' );
-	wp_enqueue_script('mapbox locate', 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.js', array('mapbox'), '0.24.0', false );
-
-	// Mapbox cluster plugin style and script
-	wp_enqueue_style('mapbox marker cluster', 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css', array(), '0.4.0');
-	wp_enqueue_script('mapbox marker cluster', 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js', array('mapbox'), '0.4.0', false );
+// 	wp_enqueue_style('blog_post_map style', AT_BLOGPOSTMAP_PLUGIN_URL . 'blog_post_map.css');
+// 	wp_enqueue_style('blog_post_map marker cluster', AT_BLOGPOSTMAP_PLUGIN_URL . 'marker_cluster.css');
+// 	wp_enqueue_script('blog_post_map script', AT_BLOGPOSTMAP_PLUGIN_URL . 'blog_post_map.js', array(), false, false );
 }
 
 add_action('wp_enqueue_scripts', 'gpx2map_scripts');
@@ -62,81 +56,149 @@ function gpx2map_meta_boxes_setup() {
 	add_action( 'add_meta_boxes', 'gpx2map_add_post_meta_boxes' );
 
 	/* Save post meta on the 'save_post' hook. */
-	add_action( 'save_post', 'gpx2map_save_post_class_meta', 10, 2 );
+	add_action( 'save_post', 'gpx2map_save_meta', 10, 2 );
 }
 
 function gpx2map_add_post_meta_boxes() {
-	add_meta_box('gpx2map-trail', esc_html__('GPX2Map', 'gpx2map'), 'gpx2map_post_class_meta_box', 'post', 'normal', 'default');
+	add_meta_box('gpx2map', esc_html__('GPX2Map Trail Info', 'gpx2map'), 'gpx2map_meta_box', 'post', 'normal', 'default');
 }
 
 /* Display the post meta box. */
-function gpx2map_post_class_meta_box($object, $box) { ?>
+function gpx2map_meta_box($object, $box) { ?>
 
-  <?php wp_nonce_field( basename( __FILE__ ), 'gpx2map_trail_nonce' ); ?>
+	<?php wp_nonce_field( basename( __FILE__ ), 'gpx2map_nonce' ); ?>
 
-  <p>
-    <label for="gpx2map-trail-title"><?php _e( "Trail title", 'gpx2map' ); ?></label>
-    <br />
-    <input class="widefat" type="text" name="gpx2map-trail-title" id="gpx2map-trail-title" size="30" />
-  </p>
+	<p>
+		<label for="gpx2map-trail-title"><?php _e( "Title", 'gpx2map' ); ?></label>
+		<br />
+		<input class="widefat" type="text" name="gpx2map-trail-title" id="gpx2map-trail-title" value="<?php echo esc_attr( get_post_meta( $object->ID, $trail_title, true ) ); ?>" size="30" />
+	</p>
+
+	<p>
+		<label for="gpx2map-trail-aka"><?php _e( "Also know as", 'gpx2map' ); ?></label>
+		<br />
+		<input class="widefat" type="text" name="gpx2map-trail-aka" id="gpx2map-trail-aka" value="<?php echo esc_attr( get_post_meta( $object->ID, $trail_aka, true ) ); ?>" size="30" />
+	</p>
+
+	<p>
+		<label for="gpx2map-trail-length"><?php _e( "Length", 'gpx2map' ); ?></label>
+		<br />
+		<input class="widefat" type="text" name="gpx2map-trail-length" id="gpx2map-trail-length" value="<?php echo esc_attr( get_post_meta( $object->ID, $trail_length, true ) ); ?>" size="30" />
+	</p>
+
+	<p>
+		<label for="gpx2map-trail-total-up"><?php _e( "Total elevation gain [m]", 'gpx2map' ); ?></label>
+		<br />
+		<input class="widefat" type="text" name="gpx2map-trail-total-up" id="gpx2map-trail-total-up" value="<?php echo esc_attr( get_post_meta( $object->ID, $trail_total_up, true ) ); ?>" size="30" />
+	</p>
+
+	<p>
+		<label for="gpx2map-trail-total-down"><?php _e( "Total elevation loss [m]", 'gpx2map' ); ?></label>
+		<br />
+		<input class="widefat" type="text" name="gpx2map-trail-total-down" id="gpx2map-trail-total-down" value="<?php echo esc_attr( get_post_meta( $object->ID, $trail_total_down, true ) ); ?>" size="30" />
+	</p>
+
+	<p>
+		<label for="gpx2map-trail-trailhead"><?php _e( "Trailhead", 'gpx2map' ); ?></label>
+		<br />
+		<input class="widefat" type="text" name="gpx2map-trail-trailhead" id="gpx2map-trail-trailhead" value="<?php echo esc_attr( get_post_meta( $object->ID, $trail_trailhead, true ) ); ?>" size="30" />
+	</p>
+
+	<p>
+		<label for="gpx2map-trail-howtofind"><?php _e( 'How to find the trail', 'gpx2map')?></label>
+		<br />
+		<textarea name="gpx2map-trail-howtofind" id="gpx2map-trail-howtofind"><?php echo esc_attr( get_post_meta( $object->ID, $trail_howtofind, true ) ); ?></textarea>
+	</p>
+
+	<p>
+		<label for="gpx2map-trail-desc"><?php _e( 'Trail Description', 'gpx2map')?></label>
+		<br />
+		<textarea name="gpx2map-trail-desc" id="gpx2map-trail-desc"><?php echo esc_attr( get_post_meta( $object->ID, $trail_desc, true ) ); ?></textarea>
+	</p>
 <?php }
 
 /* Save the meta box's post metadata. */
-function gpx2map_save_post_class_meta( $post_id, $post ) {
+function gpx2map_save_meta( $post_id, $post ) {
 
-  /* Verify the nonce before proceeding. */
-  if ( !isset( $_POST['gpx2map_trail_nonce'] ) || !wp_verify_nonce( $_POST['gpx2map_trail_nonce'], basename( __FILE__ ) ) )
-    return $post_id;
+	/* Verify the nonce before proceeding. */
+	if ( !isset( $_POST['gpx2map_nonce'] ) || !wp_verify_nonce( $_POST['gpx2map_nonce'], basename( __FILE__ ) ) ) {
+		return $post_id;
+	}
 
-  /* Get the post type object. */
-  $post_type = get_post_type_object( $post->post_type );
+	$post_type = get_post_type_object( $post->post_type );
 
-  /* Check if the current user has permission to edit the post. */
-  if ( !current_user_can( $post_type->cap->edit_post, $post_id ) )
-    return $post_id;
+	/* Check if the current user has permission to edit the post. */
+	if ( !current_user_can( $post_type->cap->edit_post, $post_id ) ){
+		return $post_id;  	
+	}
 
-  /* Get the posted data and sanitize it for use as an HTML class. */
-  $new_meta_value = ( isset( $_POST['gpx2map-trail-title'] ) ? sanitize_html_class( $_POST['gpx2map-trail-title'] ) : '' );
 
-  /* Get the meta key. */
-  $meta_key = 'gpx2map-trail';
+	$new_meta_values = array();
+	$meta_values = array();
 
-  /* Get the meta value of the custom field key. */
-  $meta_value = get_post_meta( $post_id, $meta_key, true );
+	foreach($meta_keys as $key) {
+		$meta_values = get_post_meta( $post_id, $key, true );
+		$new_meta_values = isset( $_POST[$key] ) ? sanitize_text_field( $_POST[$key] ) : '';
+	}
 
-  /* If a new meta value was added and there was no previous value, add it. */
-  if ( $new_meta_value && '' == $meta_value )
-    add_post_meta( $post_id, $meta_key, $new_meta_value, true );
+	for ($i = 0; $i < count($meta_keys); $i++) {
+		/* If a new meta value was added and there was no previous value, add it. */
+		if ( $new_meta_values[$i] && '' == $meta_values[$i] ) {
+			add_post_meta( $post_id, $meta_keys[$i], $new_meta_value[$i], true );
+		}
 
-  /* If the new meta value does not match the old value, update it. */
-  elseif ( $new_meta_value && $new_meta_value != $meta_value )
-    update_post_meta( $post_id, $meta_key, $new_meta_value );
+		/* If the new meta value does not match the old value, update it. */
+		elseif ( $new_meta_values[$i] && $new_meta_values[$i] != $meta_values[$i] ) {
+			update_post_meta( $post_id, $mata_keys[$i], $new_meta_values[$i] );
+		}
 
-  /* If there is no new meta value but an old value exists, delete it. */
-  elseif ( '' == $new_meta_value && $meta_value )
-    delete_post_meta( $post_id, $meta_key, $meta_value );
+		/* If there is no new meta value but an old value exists, delete it. */
+		elseif ( '' == $new_meta_values[$i] && $meta_values[$i] ) {
+			delete_post_meta( $post_id, $meta_keys[$i], $meta_values[$i] );
+		}
+	}
+
+
+
+	  // /* Get the posted data and sanitize it. */
+	  // $new_meta_value = ( isset( $_POST['gpx2map-trail-title'] ) ? sanitize_text_field( $_POST['gpx2map-trail-title'] ) : '' );
+
+	  // /* Get the meta value of the custom field key. */
+	  // $meta_value = get_post_meta( $post_id, $trail_title, true );
+
+	  // /* If a new meta value was added and there was no previous value, add it. */
+	  // if ( $new_meta_value && '' == $meta_value )
+	  //   add_post_meta( $post_id, $trail_title, $new_meta_value, true );
+
+	  // /* If the new meta value does not match the old value, update it. */
+	  // elseif ( $new_meta_value && $new_meta_value != $meta_value )
+	  //   update_post_meta( $post_id, $trail_title, $new_meta_value );
+
+	  // /* If there is no new meta value but an old value exists, delete it. */
+	  // elseif ( '' == $new_meta_value && $meta_value )
+	  //   delete_post_meta( $post_id, $trail_title, $meta_value );
 }
 
-function gpx2map_trail_info_html() {
-	/* Get the custom post class. */
+function gpx2map_trail_info_html($post_id) {
+
     $trail_title = get_post_meta( $post_id, 'gpx2map-trail-title', true );
 
 	$html = '<div id="gpx2map-trail-title">' . $trail_title . '</div>';
 
-	retrun $html;
+	return $html;
 }
 
 /* Filter the post class hook with our custom post class function. */
-add_filter( 'the_content', 'gpx2map_add_trail_info' )
+add_filter('the_content', 'gpx2map_add_trail_info');
 
 function gpx2map_add_trail_info($content) {
-	* Get the current post ID. */
+	/* Get the current post ID. */
   	$post_id = get_the_ID();
 
   	if ( !empty( $post_id ) ) {
   		$shortcode = '[at_gpx2map]';
 
-		$html = gpx2map_trail_info_html();
+		$html = gpx2map_trail_info_html($post_id);
 		$content = str_replace($shortcode, $html, $content);
 	}
 
