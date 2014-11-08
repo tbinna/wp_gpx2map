@@ -23,6 +23,7 @@ jQuery(document).ready(function($){
             title: "Choose or Upload a GPX file",
             button: { text:  "Choose file" },
             multiple: false
+            //library: { type: 'image' }
         });
  
         // Runs when an image is selected.

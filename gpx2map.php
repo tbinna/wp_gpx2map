@@ -38,8 +38,13 @@ define( 'AT_GPX2MAP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 /** Enqueue page scripts and styles */
 function gpx2map_page_scripts() {
-// 	wp_enqueue_style('blog_post_map marker cluster', AT_BLOGPOSTMAP_PLUGIN_URL . 'marker_cluster.css');
-// 	wp_enqueue_script('blog_post_map script', AT_BLOGPOSTMAP_PLUGIN_URL . 'blog_post_map.js', array(), false, false );
+	wp_enqueue_style('gpx2map-leaflet-style', "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css", array(), '0.7.3');
+	wp_enqueue_script('gpx2map-leaflet-script', "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js", array(), '0.7.3', false);
+
+	wp_enqueue_script('gpx2map-leaflet-gpx-script', AT_GPX2MAP_PLUGIN_URL . 'js/leaflet-gpx/gpx.js', array('gpx2map-leaflet-script'));
+
+	wp_enqueue_style('gpx2map-page-style', AT_GPX2MAP_PLUGIN_URL . 'gpx2map-page.css');
+	wp_enqueue_script('gpx2map-trail-map', AT_GPX2MAP_PLUGIN_URL . 'js/trail-map.js', array('jquery'), false, true);
 }
 
 add_action('wp_enqueue_scripts', 'gpx2map_page_scripts');
@@ -50,10 +55,10 @@ function gpx2map_admin_scripts() {
 
     if( $typenow == 'post' ) {
 		wp_enqueue_media();
-		wp_enqueue_script( 'gpx2map-gpx-upload', plugin_dir_url( __FILE__ ) . 'gpx2map-gpx-upload.js', array('jquery'));
+		wp_enqueue_script('gpx2map-gpx-upload', AT_GPX2MAP_PLUGIN_URL . 'js/gpx-upload.js', array('jquery'));
 	}
 
-	wp_enqueue_style('gpx2map-style', plugin_dir_url( __FILE__ ) . 'gpx2map.css');
+	wp_enqueue_style('gpx2map-admin-style', AT_GPX2MAP_PLUGIN_URL . 'gpx2map-admin.css');
 }
 
 add_action('admin_enqueue_scripts', 'gpx2map_admin_scripts');
@@ -180,9 +185,11 @@ function gpx2map_trail_info_html($post_id) {
 
 	global $meta_keys;
 
-    $title = get_post_meta( $post_id, $meta_keys["trail_title"], true );
+    $title = get_post_meta($post_id, $meta_keys["trail_title"], true);
 
 	$html = '<div id="gpx2map-trail-title">' . $title . '</div>';
+
+	$html .= '<div id="trail-map"></div>';
 
 	return $html;
 }
@@ -191,7 +198,6 @@ function gpx2map_trail_info_html($post_id) {
 add_filter('the_content', 'gpx2map_add_trail_info');
 
 function gpx2map_add_trail_info($content) {
-	/* Get the current post ID. */
   	$post_id = get_the_ID();
 
   	if ( !empty( $post_id ) ) {
