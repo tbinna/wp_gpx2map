@@ -36,17 +36,27 @@ if ( !function_exists( 'add_action' ) ) {
 define( 'AT_GPX2MAP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'AT_GPX2MAP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
-/**
- * Enqueue scripts and styles
- */
-function gpx2map_scripts() {
-
-// 	wp_enqueue_style('blog_post_map style', AT_BLOGPOSTMAP_PLUGIN_URL . 'blog_post_map.css');
+/** Enqueue page scripts and styles */
+function gpx2map_page_scripts() {
 // 	wp_enqueue_style('blog_post_map marker cluster', AT_BLOGPOSTMAP_PLUGIN_URL . 'marker_cluster.css');
 // 	wp_enqueue_script('blog_post_map script', AT_BLOGPOSTMAP_PLUGIN_URL . 'blog_post_map.js', array(), false, false );
 }
 
-add_action('wp_enqueue_scripts', 'gpx2map_scripts');
+add_action('wp_enqueue_scripts', 'gpx2map_page_scripts');
+
+/** Enqueue admin scripts and styles */
+function gpx2map_admin_scripts() {
+	global $typenow;
+
+    if( $typenow == 'post' ) {
+		wp_enqueue_media();
+		wp_enqueue_script( 'gpx2map-gpx-upload', plugin_dir_url( __FILE__ ) . 'gpx2map-gpx-upload.js', array('jquery'));
+	}
+
+	wp_enqueue_style('gpx2map-style', plugin_dir_url( __FILE__ ) . 'gpx2map.css');
+}
+
+add_action('admin_enqueue_scripts', 'gpx2map_admin_scripts');
 
 /* Fire our meta box setup function on the post editor screen. */
 add_action( 'load-post.php', 'gpx2map_meta_boxes_setup' );
@@ -75,8 +85,8 @@ function gpx2map_meta_box($post) {
 	<p>
 		<label for="gpx2map-gpx-file"><?php _e('GPX file', 'gpx2map')?></label>
 		<br />
-		<input type="text" name="gpx2map-gpx-file" id="gpx2map-gpx-file" value="<?php if( isset($prfx_stored_meta['meta-image'])) echo $prfx_stored_meta['meta-image'][0]; ?>" />
-		<input type="button" id="gpx2map-gpx-file-button" class="button" value="<?php _e('Choose or Upload a GPX file', 'gpx2map')?>" />
+		<input type="text" name="gpx2map-gpx-file" id="gpx2map-gpx-file" value="<?php echo esc_attr(get_post_meta($post->ID, $meta_keys["trail_gpx"], true)); ?>" />
+		<input type="button" id="gpx2map-gpx-file-button" class="button" value="<?php _e('Choose or Upload a GPX file...', 'gpx2map')?>" />
 	</p>
 
 	<p>
@@ -94,19 +104,19 @@ function gpx2map_meta_box($post) {
 	<p>
 		<label for="gpx2map-trail-length"><?php _e( "Length [km]", 'gpx2map' ); ?></label>
 		<br />
-		<input class="widefat" type="number" name="gpx2map-trail-length" id="gpx2map-trail-length" value="<?php echo esc_attr(get_post_meta( $post->ID, $meta_keys["trail_length"], true)); ?>" size="5" />
+		<input class="widefat" type="number" step="any" name="gpx2map-trail-length" id="gpx2map-trail-length" value="<?php echo esc_attr(get_post_meta( $post->ID, $meta_keys["trail_length"], true)); ?>" size="5" />
 	</p>
 
 	<p>
 		<label for="gpx2map-trail-total-up"><?php _e( "Total elevation gain [m]", 'gpx2map' ); ?></label>
 		<br />
-		<input class="widefat" type="number" name="gpx2map-trail-total-up" id="gpx2map-trail-total-up" value="<?php echo esc_attr(get_post_meta( $post->ID, $meta_keys["trail_total_up"], true)); ?>" size="5" />
+		<input class="widefat" type="number" min="0" name="gpx2map-trail-total-up" id="gpx2map-trail-total-up" value="<?php echo esc_attr(get_post_meta( $post->ID, $meta_keys["trail_total_up"], true)); ?>" size="5" />
 	</p>
 
 	<p>
 		<label for="gpx2map-trail-total-down"><?php _e( "Total elevation loss [m]", 'gpx2map' ); ?></label>
 		<br />
-		<input class="widefat" type="number" name="gpx2map-trail-total-down" id="gpx2map-trail-total-down" value="<?php echo esc_attr(get_post_meta( $post->ID, $meta_keys["trail_total_down"], true)); ?>" size="5" />
+		<input class="widefat" type="number" min="0" name="gpx2map-trail-total-down" id="gpx2map-trail-total-down" value="<?php echo esc_attr(get_post_meta( $post->ID, $meta_keys["trail_total_down"], true)); ?>" size="5" />
 	</p>
 
 	<p>

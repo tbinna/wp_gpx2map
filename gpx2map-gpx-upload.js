@@ -12,9 +12,9 @@ jQuery(document).ready(function($){
         // Prevents the default action from occuring.
         e.preventDefault();
  
-        // If the frame  exists, re-oalreadypen it.
-        if (gpx_file_frame) {
-            <span class="nx">gpx_file_frame</span><span class="p">.</span><span class="nx">open</span>();
+        // If the frame already exists, re-open it.
+        if ( gpx_file_frame ) {
+            gpx_file_frame.open();
             return;
         }
  
@@ -22,8 +22,8 @@ jQuery(document).ready(function($){
         gpx_file_frame = wp.media.frames.gpx_file_frame = wp.media({
             title: "Choose or Upload a GPX file",
             button: { text:  "Choose file" },
-            multiple: false,
-            library: { type: 'image' }
+            multiple: false
+            //library: { type: 'image' }
         });
  
         // Runs when an image is selected.
@@ -37,6 +37,6 @@ jQuery(document).ready(function($){
         });
  
         // Opens the media library frame.
-        <span class="nx">gpx_file_frame</span><span class="p">.</span><span class="nx">open</span>();
+        gpx_file_frame.open();
     });
 });

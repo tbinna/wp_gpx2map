@@ -1,1 +1,9 @@
-/* gpx2map css */
+textarea#gpx2map-trail-howtofind {
+	width: 100%;
+	height: 200px;
+}
+
+textarea#gpx2map-trail-desc {
+	width: 100%;
+	height: 200px;
+}
