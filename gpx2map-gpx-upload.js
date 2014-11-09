@@ -25,7 +25,7 @@ jQuery(document).ready(function($){
             multiple: false
         });
  
-        // Runs when an image is selected.
+        // Runs when an file is selected.
         gpx_file_frame.on('select', function(){
  
             // Grabs the attachment selection and creates a JSON representation of the model.

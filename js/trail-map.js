@@ -4,7 +4,7 @@ L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
 	attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
 }).addTo(map);
 
-var gpx_url = "http://localhost:8888/wordpress/wp-content/uploads/2014/11/BikeTrailAdlisberg1.gpx";
+var gpx_url = data.gpx_file;
 new L.GPX(gpx_url, {
 	async: true,
  	marker_options: {
