@@ -1,4 +1,24 @@
 #trail-map {
 	width: 100%;
-	height: 400px;
+	height: 500px;
+}
+
+#trail-info hr {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	width: 100%;
+	height: 1px;
+}
+
+#trail-info .btn {
+	background: #454545;
+	padding: 0.5em;
+	margin-top: 10px;
+}
+
+#trail-info .page-header {
+	background: none;
+	padding: 0px;
+	text-align: left;
+	color: #454545;
 }

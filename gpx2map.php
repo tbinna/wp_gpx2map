@@ -40,6 +40,10 @@ define( 'AT_GPX2MAP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 function gpx2map_page_scripts() {
 	global $meta_keys;
 
+	wp_enqueue_style('gpx2map-boostrap-style', "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css", array(), '3.3.0');
+	wp_enqueue_style('gpx2map-boostrap-theme-style', "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css", array(), '3.3.0');
+	wp_enqueue_script('gpx2map-boostrap-script', "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js", array(), '3.3.0', false);
+
 	wp_enqueue_style('gpx2map-leaflet-style', "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css", array(), '0.7.3');
 	wp_enqueue_script('gpx2map-leaflet-script', "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js", array(), '0.7.3', false);
 
@@ -196,39 +200,43 @@ function gpx2map_trail_info_html($post_id) {
 	global $meta_keys;
 
 	$html =
-	'<div class="trail-info">
-		<div class="page-header">
-			<h4>' . get_post_meta($post_id, $meta_keys["trail_title"], true) . '</h4>
-		</div>
-		<div>
+	'<div id="trail-info" class="panel panel-default">
+		<div class="panel-body">
+			<div class="page-header">
+				<h1>' . get_post_meta($post_id, $meta_keys["trail_title"], true) . ' <small>' . get_post_meta($post_id, $meta_keys["trail_aka"], true) . '</small></h1>
+			</div>
 			<dl class="dl-horizontal">
-				<dt>Also known as</dt><dd>' . get_post_meta($post_id, $meta_keys["trail_aka"], true) . '</dd>
-				<dt>Length</dt><dd>' . get_post_meta($post_id, $meta_keys["trail_length"], true) . ' km</dd>
-				<dt>Elevation</dt><dd>↗ ' . get_post_meta($post_id, $meta_keys["trail_total_up"], true) . 'm| ↘ ' . get_post_meta($post_id, $meta_keys["trail_total_down"], true) . 'm</dd>
-				<dt>Location</dt><dd>' . get_post_meta($post_id, $meta_keys["trail_trailhead"], true) . '</dd>
-				<dt>Download</dt><dd><a href="' . get_post_meta($post_id, $meta_keys["trail_gpx"], true) . '" target="_blank">GPX</a></dd>
+				<dt><span class="glyphicon glyphicon-resize-horizontal"></span></dt><dd>' . get_post_meta($post_id, $meta_keys["trail_length"], true) . ' km</dd>
+				<dt><span class="glyphicon glyphicon-resize-vertical"></span></dt><dd><span class="glyphicon glyphicon-chevron-up"></span> ' . get_post_meta($post_id, $meta_keys["trail_total_up"], true) . 'm <span class="glyphicon glyphicon-chevron-down"></span> ' . get_post_meta($post_id, $meta_keys["trail_total_down"], true) . 'm</dd>
+				<dt><span class="glyphicon glyphicon-map-marker"></span></dt><dd>' . get_post_meta($post_id, $meta_keys["trail_trailhead"], true) . '</dd>
+				<dt><span class="glyphicon glyphicon-download"></span></dt><dd><a href="' . get_post_meta($post_id, $meta_keys["trail_gpx"], true) . '" target="_blank">GPX</a></dd>
 			</dl>
-		</div>
 
-		<hr />
+			<hr />
 
-		<h5>How to find the trail</h5>
-		' . get_post_meta($post_id, $meta_keys["trail_howtofind"], true) . '
+			<h5>How to find the trail</h5>
+			<p>' . get_post_meta($post_id, $meta_keys["trail_howtofind"], true) . '</p>
 
-		<hr />
+			<hr />
 
-		<h5>Trail description</h5>
-		' . get_post_meta($post_id, $meta_keys["trail_desc"], true) . '
+			<h5>Trail description</h5>
+			<p>' . get_post_meta($post_id, $meta_keys["trail_desc"], true) . '</p>
 
-		<hr />';
+			<hr />';
 		
 		if(get_post_meta($post_id, $meta_keys["trail_gpx"], true)) {
 			$html .=
 			'<h5>Trail map</h5>
-				<div id="trail-map"></div>
-				<div><a class="btn btn-primary btn-default pull-right" href="' . get_post_meta($post_id, $meta_keys["trail_gpx"], true) . '"><i class="icon-download"></i> Download GPX</a></div>
-			</div>';
+			<div id="trail-map"></div>';
+
 		}
+
+	$html .=
+		'</div> <!-- close panel body -->
+		<div class="panel-footer">
+			<div><a class="btn btn-primary btn-default pull-right" href="' . get_post_meta($post_id, $meta_keys["trail_gpx"], true) . '"><span class="glyphicon glyphicon-download"></span> Download GPX</a></div>
+		</div>
+	</div> <!-- close trail info -->';
 
 	return $html;
 }
