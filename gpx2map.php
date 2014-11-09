@@ -43,7 +43,8 @@ function gpx2map_page_scripts() {
 	wp_enqueue_style('gpx2map-leaflet-style', "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css", array(), '0.7.3');
 	wp_enqueue_script('gpx2map-leaflet-script', "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js", array(), '0.7.3', false);
 
-	wp_enqueue_script('gpx2map-leaflet-gpx-script', AT_GPX2MAP_PLUGIN_URL . 'js/leaflet-gpx/gpx.js', array('gpx2map-leaflet-script'));
+	wp_enqueue_script('gpx2map-leaflet-gpx-script', AT_GPX2MAP_PLUGIN_URL . 'js/gpx.js', array('gpx2map-leaflet-script'));
+	// wp_enqueue_script('gpx2map-leaflet-gpx-script-test', 'https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js', array('gpx2map-leaflet-script'));
 
 	wp_enqueue_style('gpx2map-page-style', AT_GPX2MAP_PLUGIN_URL . 'gpx2map-page.css');
 

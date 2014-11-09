@@ -16,3 +16,5 @@ new L.GPX(gpx_url, {
   	var gpx = e.target;
   	map.fitBounds(e.target.getBounds());
 }).addTo(map);
+
+// omnivore.gpx(data.gpx_file).addTo(map);
