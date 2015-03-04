@@ -1,0 +1,64 @@
+<div id="trail-info" class="panel panel-default">
+	<div class="panel-body">
+		<div class="page-header">
+			<h1>{{ meta_fields.trail_title.input_value }}
+				{% if meta_fields.trail_aka.input_value is not empty %}
+					<small>{{ meta_fields.trail_aka.input_value }}</small>
+				{% endif %}
+			</h1>
+		</div>
+		<dl class="dl-horizontal">
+			{% if meta_fields.trail_length.input_value is not empty %}
+				<dt><span class="glyphicon glyphicon-resize-horizontal"></span></dt>
+				<dd>{{meta_fields.trail_length.input_value }}km</dd>
+			{% endif %}
+
+			{% if meta_fields.trail_total_up.input_value is not empty or meta_fields.trail_total_down.input_value is not empty %}
+			<dt><span class="glyphicon glyphicon-resize-vertical"></span></dt>
+			<dd>
+				{% if meta_fields.trail_total_up.input_value is not empty %}
+					<span class="glyphicon glyphicon-chevron-up"></span>
+					{{ meta_fields.trail_total_up.input_value }}m
+				{% endif %}
+				{% if meta_fields.trail_total_down.input_value is not empty %}
+					<span class="glyphicon glyphicon-chevron-down"></span>
+					{{ meta_fields.trail_total_down.input_value }}m
+				{% endif %}
+			</dd>
+			{% endif %}
+
+			{% if meta_fields.trail_trailhead.input_value is not empty %}
+				<dt><span class="glyphicon glyphicon-map-marker"></span></dt>
+				<dd>{{ meta_fields.trail_trailhead.input_value }}</dd>
+			{% endif %}
+
+			{% if meta_fields.trail_gpx.input_value is not empty %}
+				<dt><span class="glyphicon glyphicon-download"></span></dt>
+				<dd><a href="{{ meta_fields.trail_gpx.input_value }}" target="_blank">GPX</a></dd>
+			{% endif %}
+		</dl>
+
+		{% if meta_fields.trail_howtofind.input_value is not empty %}
+			<hr />
+			<h5>How to find the trail</h5>
+			<p>{{ meta_fields.trail_howtofind.input_value }}</p>
+		{% endif %}
+
+		{% if meta_fields.trail_desc.input_value is not empty %}
+			<hr />
+			<h5>Trail description</h5>
+			<p>{{ meta_fields.trail_desc.input_value }}</p>
+		{% endif %}
+
+		{% if meta_fields.trail_gpx.input_value is not empty %}
+			<hr />
+			<h5>Trail map</h5>
+			<div id="trail-map"></div>
+		{% endif %}
+	</div> <!-- close panel body -->
+	{% if meta_fields.trail_gpx.input_value is not empty %}
+		<div class="panel-footer">
+			<div><a class="btn btn-primary btn-default pull-right" href="{{ meta_fields.trail_gpx.input_value }}"><span class="glyphicon glyphicon-download"></span> Download GPX</a></div>
+		</div>
+	{% endif %}
+</div> <!-- close trail info -->

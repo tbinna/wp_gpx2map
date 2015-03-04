@@ -1,0 +1,14 @@
+{% for field in meta_fields %}
+	<p>
+		<label for="{{field["meta_key"]}}">{{field["input_label"]}}</label>
+		<br />
+	{% if field['input_type'] == "textarea" %}
+		<textarea id="{{field["meta_key"]}}" name="{{field["meta_key"]}}" {{field["input_attrs"]}}>{{field["input_value"]}}</textarea>
+	{% elseif field['input_type'] == "file" %}
+		<input type="text" id="{{field["meta_key"]}}" name="{{field["meta_key"]}}" {{field["input_attrs"]}} value="{{field["input_value"]}}" class="widefat">
+		<input type="button" id="{{field["meta_key"]}}-button" name="{{field["meta_key"]}}-button" value="Choose or Upload a GPX file..." class="button"> 
+	{% else %}
+		<input type="{{field["input_type"]}}" id="{{field["meta_key"]}}" name="{{field["meta_key"]}}" {{field["input_attrs"]}} value="{{field["input_value"]}}" class="widefat">
+	{% endif %}
+	</p>
+{% endfor %}
