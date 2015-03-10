@@ -13,6 +13,5 @@ new L.GPX(gpx_url, {
         shadowUrl:    'http://github.com/mpetazzoni/leaflet-gpx/raw/master/pin-shadow.png',
       },
   }).on('loaded', function(e) {
-  	var gpx = e.target;
   	map.fitBounds(e.target.getBounds());
 }).addTo(map);
