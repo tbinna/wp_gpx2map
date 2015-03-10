@@ -1,6 +1,6 @@
 # GPX2Map
 
-This small wordpress plugin allows the blog post writer to attach a trail description to any blog post and visualize the trail through a GPX file on a map. 
+This wordpress plugin allows the blog post writer to attach a trail description to any blog post and visualize the trail through a GPX file on a map. 
 
 
 ## Plugin Installation
@@ -19,4 +19,4 @@ function custom_upload_mimes ( $existing_mimes=array() ) {
 
 ## Developer Info
 
-This plugin uses PHP composer to manage dependencies. Check the composer manual on how to install the dependencies of this project.
+This plugin uses PHP composer to manage dependencies. Check the composer manual on how to install the dependencies for this project.
