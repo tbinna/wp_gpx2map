@@ -35,9 +35,8 @@ class Gpx2Map {
 
 	// Callback
 	public function register_page_scripts() {
-		wp_register_style('gpx2map-boostrap-style', "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css", array(), '3.3.0');
-		wp_register_style('gpx2map-boostrap-theme-style', "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css", array(), '3.3.0');
-		wp_register_script('gpx2map-boostrap-script', "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js", array(), '3.3.0', false);
+		wp_register_style('gpx2map-boostrap-style', $this->plugin_dir_url . "/css/bootstrap.min.css");
+		wp_register_style('gpx2map-boostrap-theme-style', $this->plugin_dir_url . "/css/bootstrap-theme.min.css");
 
 		wp_register_style('gpx2map-leaflet-style', "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css", array(), '0.7.3');
 		wp_register_script('gpx2map-leaflet-script', "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js", array(), '0.7.3', false);

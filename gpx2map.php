@@ -3,7 +3,7 @@
  * Plugin Name: Adventure Tracks GPX2Map
  * Plugin URI: http://www.adventure-tracks.com
  * Description: Visualze gpx files as maps on posts.
- * Version: 0.3
+ * Version: 0.3.1
  * Author: Tobi Binna
  * Author URI: http://www.adventure-tracks.com
  * License: GPL2
